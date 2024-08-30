@@ -74,6 +74,12 @@ This repository contains all the code necessary to help customers build Terrafor
 
 ## How to Use
 
+To begin using the Workspace Builder tool, run the following command in your terminal:
+
+```bash
+python prompts.py
+```
+
 1. **Input Required Details:** Provide all necessary details regarding network configuration, IAM roles, and S3 settings.
 2. **Generate Terraform Script:** The Workspace Builder tool will create a Terraform script based on your inputs.
 3. **Deploy Workspace:** Use the generated Terraform script to deploy your Databricks workspace.
