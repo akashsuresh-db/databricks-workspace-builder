@@ -48,7 +48,7 @@ jobs:
 
     - name: Update Databricks Git folder
       run: |
-        databricks repos update --path ${{env.REPO_PATH}} --branch "${{ steps.extract_branch.outputs.branch }}"
+        databricks repos update ${{env.REPO_PATH}} --branch "${{ steps.extract_branch.outputs.branch }}"
 
     # - name: Build Wheel and send to Databricks workspace DBFS location
     #   run: |
