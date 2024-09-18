@@ -29,7 +29,7 @@ def main():
     create_storage_configs(databricks_id)
 
     # creating Databricks Workspace
-    # testing comments
+    # making changes
     create_workspace(databricks_id,region)
 
 
