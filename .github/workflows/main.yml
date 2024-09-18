@@ -6,6 +6,8 @@ name: CI
 on:
   # Triggers the workflow on push for main and dev branch
   push:
+    paths-ignore:
+      - .github
     branches:
       # Set your base branch name here
       - main
@@ -37,10 +39,6 @@ jobs:
     # See https://github.com/databricks/setup-cli
     - uses: databricks/setup-cli@main
 
-    # - name: Configure CLI
-    #   run: |
-    #     echo "${{ secrets.DEPLOYMENT_TARGET_URL }} ${{ secrets.DEPLOYMENT_TARGET_TOKEN }}" | databricks configure --token
-
     - name: Extract branch name
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -49,11 +47,3 @@ jobs:
     - name: Update Databricks Git folder
       run: |
         databricks repos update ${{env.REPO_PATH}} --branch "${{ steps.extract_branch.outputs.branch }}"
-
-    # - name: Build Wheel and send to Databricks workspace DBFS location
-    #   run: |
-    #     cd $GITHUB_WORKSPACE
-    #     python setup.py bdist_wheel
-    #     dbfs cp --overwrite ./dist/* ${{env.DBFS_LIB_PATH}}
-    #     # there is only one wheel file; this line copies it with the original version number in file name and overwrites if that version of wheel exists; it does not affect the other files in the path
-    #     dbfs cp --overwrite ./dist/* ${{env.DBFS_LIB_PATH}}${{env.LATEST_WHEEL_NAME}} # this line copies the wheel file and overwrites the latest version with it
