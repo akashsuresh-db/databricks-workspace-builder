@@ -38,9 +38,9 @@ jobs:
         pip install databricks-cli
         pip install pytest setuptools wheel
 
-    - name: Configure CLI
-      run: |
-        echo "${{env.DEPLOYMENT_TARGET_URL}} ${{env.DEPLOYMENT_TARGET_TOKEN}}" | databricks configure --token
+    # - name: Configure CLI
+    #   run: |
+    #     echo "${{env.DEPLOYMENT_TARGET_URL}} ${{env.DEPLOYMENT_TARGET_TOKEN}}" | databricks configure --token
 
     - name: Extract branch name
       shell: bash
