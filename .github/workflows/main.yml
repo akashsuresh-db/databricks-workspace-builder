@@ -8,7 +8,7 @@ on:
   push:
     branches:
       # Set your base branch name here
-      - main
+      - your-base-branch-name
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -18,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     env:
-      DEPLOYMENT_TARGET_URL: ${{ secrets.DEPLOYMENT_TARGET_URL }}
-      DEPLOYMENT_TARGET_TOKEN: ${{ secrets.DEPLOYMENT_TARGET_TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DEPLOYMENT_TARGET_URL }}
+      DATABRICKS_TOKEN:  ${{ secrets.DEPLOYMENT_TARGET_TOKEN }}
       REPO_PATH: /Workspace/Users/akash.s@databricks.com/databricks-workspace-builder
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Setup Python
       uses: actions/setup-python@v2
@@ -33,14 +33,13 @@ jobs:
       # Version range or exact version of a Python version to use, using SemVer's version range syntax.
         python-version: 3.8
 
-    - name: Install mods
-      run: |
-        pip install databricks-cli
-        pip install pytest setuptools wheel
+    # Download the Databricks CLI.
+    # See https://github.com/databricks/setup-cli
+    - uses: databricks/setup-cli@main
 
     # - name: Configure CLI
     #   run: |
-    #     echo "${{env.DEPLOYMENT_TARGET_URL}} ${{env.DEPLOYMENT_TARGET_TOKEN}}" | databricks configure --token
+    #     echo "${{ secrets.DEPLOYMENT_TARGET_URL }} ${{ secrets.DEPLOYMENT_TARGET_TOKEN }}" | databricks configure --token
 
     - name: Extract branch name
       shell: bash
@@ -50,3 +49,11 @@ jobs:
     - name: Update Databricks Git folder
       run: |
         databricks repos update --path ${{env.REPO_PATH}} --branch "${{ steps.extract_branch.outputs.branch }}"
+
+    # - name: Build Wheel and send to Databricks workspace DBFS location
+    #   run: |
+    #     cd $GITHUB_WORKSPACE
+    #     python setup.py bdist_wheel
+    #     dbfs cp --overwrite ./dist/* ${{env.DBFS_LIB_PATH}}
+    #     # there is only one wheel file; this line copies it with the original version number in file name and overwrites if that version of wheel exists; it does not affect the other files in the path
+    #     dbfs cp --overwrite ./dist/* ${{env.DBFS_LIB_PATH}}${{env.LATEST_WHEEL_NAME}} # this line copies the wheel file and overwrites the latest version with it
